@@ -243,4 +243,31 @@ public abstract class MultipleInheritanceTestRunner extends BaseRunner {
         final ChildOfMappedSuperClass found = findRequired(ChildOfMappedSuperClass.class, uri);
         assertEquals(label, found.getLabel());
     }
+
+    @Test
+    void interfaceEntityChildWithSameClassURI() {
+        this.em = getEntityManager("interfaceEntityChildWithSameClassURI", false);
+
+        URI uri = Generators.generateUri();
+        String attributeA = "A";
+        OWLInterfaceAChild instance = new OWLInterfaceAChild();
+        instance.setId(uri);
+        instance.setAttributeA(attributeA);
+
+
+        em.getTransaction().begin();
+
+        em.persist(instance);
+
+        em.getTransaction().commit();
+
+
+        verifyExists(OWLInterfaceAChild.class, uri);
+        em.clear();
+        final OWLInterfaceAChild found = findRequired(OWLInterfaceAChild.class, uri);
+        assertEquals(attributeA, found.getAttributeA());
+        em.clear();
+        final OWLInterfaceA foundParent = findRequired(OWLInterfaceA.class, uri);
+        assertEquals(attributeA, foundParent.getAttributeA());
+    }
 }
